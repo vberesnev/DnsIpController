@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace DnsIpController
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
+        }
+
+        private void omega_button_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
