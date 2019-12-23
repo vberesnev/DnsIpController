@@ -14,7 +14,7 @@ namespace DnsIpController.Controller
         public List<Site> List;
         public Site CurrentSite;
 
-        private string SAVE_PATH = Path.Combine(System.Environment.CurrentDirectory, "tasks.csv");
+        private string FILE_PATH = Path.Combine(System.Environment.CurrentDirectory, "tasks.csv");
 
         public SitesListController()
         {
@@ -24,7 +24,7 @@ namespace DnsIpController.Controller
 
         public void Load()
         {
-            //SitesList.LoadTasksFromFile()
+            SitesList.LoadTasksFromFile(FILE_PATH, ";");
         }
     }
 }

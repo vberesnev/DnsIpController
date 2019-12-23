@@ -18,14 +18,21 @@ namespace DnsIpController.Model
                 try
                 {
                     sqlConn.Open();
-                    SqlCommand command = new SqlCommand($"", sqlConn);
+                    SqlCommand command = new SqlCommand($"SELECT * FROM [omegaPU04].[dbo].[V_HttpIp_Objects]", sqlConn);
                     var reader = command.ExecuteReader();
                     if (reader.HasRows)
                     {
                         int count = 0;
                         while (reader.Read())
                         {
-                            Site site = new Site();// reader[0].ToString();
+                            Site site = new Site(Convert.ToInt32(reader[0]),
+                                                 Convert.ToInt32(reader[1]),
+                                                 reader[2].ToString(),
+                                                 reader[3].ToString(),
+                                                 reader[4].ToString(),
+                                                 reader[5].ToString(),
+                                                 reader[6].ToString()
+                                                 );
                             sitesList.Items.Add(site);
                             count++;
                         }

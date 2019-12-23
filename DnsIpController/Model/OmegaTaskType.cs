@@ -8,7 +8,8 @@ namespace DnsIpController.Model
 {
     public enum OmegaTaskType
     {
-        IP,
-        Domain
+        Other = 0,
+        IP = 1,
+        Domain = 2
     }
 }
