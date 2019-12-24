@@ -11,20 +11,33 @@ namespace DnsIpController.Controller
     public class SitesListController
     {
         private SitesList SitesList;
-        public List<Site> List;
-        public Site CurrentSite;
+        public List<Site> List { get; private set; }
+        public Site CurrentSite { get; set; }
+        public string Message { get; private set; }
 
-        private string FILE_PATH = Path.Combine(System.Environment.CurrentDirectory, "tasks.csv");
+        private FileInfo file;
 
-        public SitesListController()
+        public SitesListController(string filePath)
         {
             SitesList = new SitesList();
             List = SitesList.Items;
+            Message = SitesList.InfoMessage;
+            file = new FileInfo(filePath);
         }
 
         public void Load()
         {
-            SitesList.LoadTasksFromFile(FILE_PATH, ";");
+            if (File.Exists(file.FullName))
+                SitesList.LoadTasksFromFile(file.FullName, ";");
+            else
+                Message = $"Файла {file.FullName} не сущестует. Сначала загрузите его через базу Омеги";
+        }
+
+        public bool LoadFromOmega()
+        {
+            var b = SitesList.LoadTasksFromOmega(file.FullName);
+            Message = SitesList.InfoMessage;
+            return b;
         }
     }
 }

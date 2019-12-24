@@ -45,6 +45,7 @@ namespace DnsIpController.Model
                 }
                 catch (Exception ex)
                 {
+                    //if (ex.)
                     sitesList.InfoMessage = ex.Message;
                     return false;
                 }

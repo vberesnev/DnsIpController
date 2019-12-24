@@ -24,24 +24,56 @@ namespace DnsIpController.Model
 
         public void LoadTasksFromFile(string path, string separator)
         {
+       
             using (TextFieldParser parser = new TextFieldParser(path, Encoding.UTF8))
             {
+                int exeptions = 0;
+
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(separator);
                 while (!parser.EndOfData)
                 {
-                    Site site = new Site();
-                    Items.Add(site);
+                    try
+                    {
+                        string[] fields = parser.ReadFields();
+                        Site site = new Site(
+                                                Convert.ToInt32(fields[0]),
+                                                Convert.ToInt32(fields[1]),
+                                                fields[2],
+                                                fields[3],
+                                                Convert.ToInt32(fields[4]),
+                                                fields[5],
+                                                fields[6],
+                                                fields[7],
+                                                fields[8],
+                                                fields[9],
+                                                fields[10]
+                                            );
+                        Items.Add(site);
+                        InfoMessage = $"Загружено {Count} сайтов";
+                    }
+                    catch(Exception ex)
+                    {
+                        exeptions++;
+                        InfoMessage = $"Ошибок загрузки из файла - {exeptions} ({ex.Message})";
+                        continue;
+                    }
                 }
-            }
+            } 
         }
 
-        public void LoadTasksFromOmega(string path)
+        public bool LoadTasksFromOmega(string path)
         {
-            File.Delete(path);
+            if (DataBase.LoadTasksFromOmega(this))
+            {
+                SaveTasksToFile(path, ";");
+                LoadTasksFromFile(path, ";");
+                return true;
+            }
+            return false;
         }
 
-        public void SaveTasksToFile(string path, string separator)
+        private void SaveTasksToFile(string path, string separator)
         {
             FileInfo file = new FileInfo(path);
             FileInfo tempfile = new FileInfo(file.DirectoryName + "temp.csv");
@@ -52,6 +84,8 @@ namespace DnsIpController.Model
                 foreach (var item in Items)
                     sw.WriteLine(item.ToCsvString(separator));
                 sw.Close();
+                file.Delete();
+                tempfile.MoveTo(path);
             }
             catch(Exception ex)
             {
