@@ -4,25 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.Windows.Forms;
 
 namespace DnsIpController.Model
 {
     public class Site
     {
-        public int RuleID { get; set; }
-        public int ObjectID { get; set; }
-        public string OmegaTaskName { get; set; }
-        public string OmegaRuleName { get; set; }
-        public OmegaTaskType OmegaTaskType { get; private set; }
-        public string OmegaRuleParametr { get; set; }
-        public string DomainName { get; set; }
-        public string SiteName { get; set; }
+        public int RuleID { get; set; } //номер првавила для задания в Омеге
+        public int ObjectID { get; set; } // номер объекта для задания в Омеге
+        public string OmegaTaskName { get; set; } //имя задания в Омеге
+        public string OmegaRuleName { get; set; } //тип контроля задания в Омеге (http, ip) в виде строчки из базы 
+        public OmegaTaskType OmegaTaskType { get; private set; } //тип контроля задания в Омеге (http, ip)
+        public string OmegaRuleParametr { get; set; } // контроллируемый параметр в задании Омеги (IP адрес, домен)
+        public string SiteName { get; set; } // имя сайта, которое указывается, если нет домена или непонятный домен (например домен в Интернете e2.ycpi.vip.deb.yahoo.com - сайта flickr.com) 
+        public string DomainName { get; set; } // домен сайта, которое соответсует Ip адресу на контроле (Столбец name из таблицы T_SITES_NAME). Берется из интернета
 
         public List<IPAddress> InternetSiteIPs { get; set; }
+        public string InternetSiteIpString => GetIpList(InternetSiteIPs, "\r\n");
+
         public string InternetSiteDomain { get; set; }
         public List<string> InternetSiteAliases { get; set; }
 
-        public Site(int ruleId, int objId, string omegaTaskName, string ruleName, string omegRuleParametr, string domainName, string siteName)
+        public Site(int ruleId, int objId, string omegaTaskName, string ruleName, string omegRuleParametr, string siteName,  string domainName)
         {
             RuleID = ruleId;
             ObjectID = objId;
@@ -54,9 +57,28 @@ namespace DnsIpController.Model
             DomainName = domainName;
             SiteName = siteName;
 
-            InternetSiteIPs = GetIpList(ipList);
+            InternetSiteIPs = GetIpList(ipList, '&');
             DomainName = domainName;
             InternetSiteAliases = aliasesList.Split('&').ToList();
+        }
+
+        public Tuple<bool, string> SaveToOmega()
+        {
+            if (this.OmegaTaskType == OmegaTaskType.IP)
+            {
+                return DataBase.UpdateIP(this);
+            }
+            else return new Tuple<bool, string>(false, "");
+        }
+
+        public void LoadFromInternet()
+        {
+            if (OmegaTaskType == OmegaTaskType.Domain)
+                GetInternetIp();
+            else if (OmegaTaskType == OmegaTaskType.IP)
+                GetInternetDomain();
+            else
+                return;
         }
 
         public void GetInternetDomain()
@@ -78,10 +100,10 @@ namespace DnsIpController.Model
             }
         }
 
+        
+
         public void GetInternetIp()
         {
-            if (OmegaTaskType != OmegaTaskType.Domain) return;
-
             try
             {
                 IPHostEntry entry = Dns.GetHostEntry(OmegaRuleParametr);
@@ -106,7 +128,7 @@ namespace DnsIpController.Model
         public string ToCsvString(string separator=";")
         {
             return  $"{RuleID}{separator}{ObjectID}{separator}{OmegaTaskName}{separator}{OmegaRuleName}{separator}{(int)OmegaTaskType}{separator}"+
-                    $"{OmegaRuleParametr}{separator}{DomainName}{separator}{SiteName}{separator}{GetIpList(InternetSiteIPs)}{separator}"+
+                    $"{OmegaRuleParametr}{separator}{DomainName}{separator}{SiteName}{separator}{GetIpList(InternetSiteIPs, "&")}{separator}"+
                     $"{InternetSiteDomain}{separator}{string.Join("&", InternetSiteAliases.ToArray())}";
         }
 
@@ -115,13 +137,13 @@ namespace DnsIpController.Model
         /// </summary>
         /// <param name="addresses">Спиок IP адресов</param>
         /// <returns>Строка IP адресов</returns>
-        private string GetIpList(List<IPAddress> addresses)
+        private string GetIpList(List<IPAddress> addresses, string separator)
         {
             string result = "";
             if (addresses.Count == 0) return result;
 
             foreach (var ip in addresses)
-                result += ip.ToString() + "&";
+                result += ip.ToString() + separator;
             return result.Remove(result.Length - 1);
         }
 
@@ -130,17 +152,17 @@ namespace DnsIpController.Model
         /// </summary>
         /// <param name="str">Входаня строка</param>
         /// <returns>Список IP адресов</returns>
-        private List<IPAddress> GetIpList(string str)
+        private List<IPAddress> GetIpList(string str, char separator)
         {
             List<IPAddress> list = new List<IPAddress>();
             if (string.IsNullOrEmpty(str) || str.ToLower() == "null") return list;
 
-            int countSeparator = str.Count(x => x == '&');
+            int countSeparator = str.Count(x => x == separator);
             if (countSeparator == 0)
                 list.Add(new IPAddress(GetIpFromString(str)));
             else
             {
-                var ipStr = str.Split('&');
+                var ipStr = str.Split(separator);
                 for (int i = 0; i < ipStr.Length; i++)
                 {
                     list.Add(new IPAddress(GetIpFromString(ipStr[i])));

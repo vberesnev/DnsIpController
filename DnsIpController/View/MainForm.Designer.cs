@@ -32,6 +32,8 @@
             this.info_label = new System.Windows.Forms.Label();
             this.file_button = new System.Windows.Forms.Button();
             this.internet_button = new System.Windows.Forms.Button();
+            this.sitesList_dataGridView = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.sitesList_dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // omega_button
@@ -47,10 +49,10 @@
             // info_label
             // 
             this.info_label.AutoSize = true;
-            this.info_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.info_label.Location = new System.Drawing.Point(12, 78);
+            this.info_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.info_label.Location = new System.Drawing.Point(12, 70);
             this.info_label.Name = "info_label";
-            this.info_label.Size = new System.Drawing.Size(53, 20);
+            this.info_label.Size = new System.Drawing.Size(49, 18);
             this.info_label.TabIndex = 1;
             this.info_label.Text = "Инфо";
             // 
@@ -62,6 +64,7 @@
             this.file_button.TabIndex = 2;
             this.file_button.Text = "Загрузить из файла";
             this.file_button.UseVisualStyleBackColor = true;
+            this.file_button.Click += new System.EventHandler(this.file_button_Click);
             // 
             // internet_button
             // 
@@ -71,18 +74,36 @@
             this.internet_button.TabIndex = 3;
             this.internet_button.Text = "Загрузить из интернета";
             this.internet_button.UseVisualStyleBackColor = true;
+            this.internet_button.Click += new System.EventHandler(this.internet_button_Click);
+            // 
+            // sitesList_dataGridView
+            // 
+            this.sitesList_dataGridView.AllowUserToAddRows = false;
+            this.sitesList_dataGridView.AllowUserToDeleteRows = false;
+            this.sitesList_dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.sitesList_dataGridView.Location = new System.Drawing.Point(12, 91);
+            this.sitesList_dataGridView.Name = "sitesList_dataGridView";
+            this.sitesList_dataGridView.ReadOnly = true;
+            this.sitesList_dataGridView.RowHeadersVisible = false;
+            this.sitesList_dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.sitesList_dataGridView.Size = new System.Drawing.Size(1051, 543);
+            this.sitesList_dataGridView.TabIndex = 4;
+            this.sitesList_dataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.sitesList_dataGridView_CellMouseDoubleClick);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1071, 646);
+            this.ClientSize = new System.Drawing.Size(1075, 646);
+            this.Controls.Add(this.sitesList_dataGridView);
             this.Controls.Add(this.internet_button);
             this.Controls.Add(this.file_button);
             this.Controls.Add(this.info_label);
             this.Controls.Add(this.omega_button);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "IpController";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.sitesList_dataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -94,6 +115,7 @@
         private System.Windows.Forms.Label info_label;
         private System.Windows.Forms.Button file_button;
         private System.Windows.Forms.Button internet_button;
+        private System.Windows.Forms.DataGridView sitesList_dataGridView;
     }
 }
 

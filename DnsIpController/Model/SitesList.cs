@@ -24,7 +24,8 @@ namespace DnsIpController.Model
 
         public void LoadTasksFromFile(string path, string separator)
         {
-       
+            Items.Clear();
+
             using (TextFieldParser parser = new TextFieldParser(path, Encoding.UTF8))
             {
                 int exeptions = 0;
@@ -50,9 +51,9 @@ namespace DnsIpController.Model
                                                 fields[10]
                                             );
                         Items.Add(site);
-                        InfoMessage = $"Загружено {Count} сайтов";
+                        InfoMessage = $"Загружено {Count} заданий";
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         exeptions++;
                         InfoMessage = $"Ошибок загрузки из файла - {exeptions} ({ex.Message})";
@@ -62,28 +63,53 @@ namespace DnsIpController.Model
             } 
         }
 
+        public void LoadFromInternet(string path, SetInfoDelegate sid)
+        {
+            if (Count == 0)
+            {
+                InfoMessage = "Нет заданий для проверки адреса в сети Интернет";
+                return;
+            }
+            try
+            {
+                for (int i = 0; i < Count; i++)
+                {
+                    Items[i].LoadFromInternet();
+                    sid($"Обработано {i++} заданий");
+                }
+                InfoMessage = $"Обработка заданий закончена. Обработано {Count} заданий";
+                SaveTasksToFile(path, ";");
+            }
+            catch (Exception ex)
+            {
+                InfoMessage = $"Ошибка при загрузке данных из Интернета: {ex.Message}";
+                return;
+            }
+        }
+
         public bool LoadTasksFromOmega(string path)
         {
+            Items.Clear();
             if (DataBase.LoadTasksFromOmega(this))
             {
                 SaveTasksToFile(path, ";");
-                LoadTasksFromFile(path, ";");
                 return true;
             }
             return false;
         }
 
-        private void SaveTasksToFile(string path, string separator)
+        public void SaveTasksToFile(string path, string separator)
         {
             FileInfo file = new FileInfo(path);
             FileInfo tempfile = new FileInfo(file.DirectoryName + "temp.csv");
 
             try
             {
-                StreamWriter sw = tempfile.AppendText();
-                foreach (var item in Items)
-                    sw.WriteLine(item.ToCsvString(separator));
-                sw.Close();
+                using (StreamWriter sw = new StreamWriter(tempfile.FullName, true, Encoding.UTF8))
+                {
+                    foreach (var item in Items)
+                        sw.WriteLine(item.ToCsvString(separator));
+                }
                 file.Delete();
                 tempfile.MoveTo(path);
             }
