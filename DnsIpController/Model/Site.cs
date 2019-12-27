@@ -58,7 +58,7 @@ namespace DnsIpController.Model
             SiteName = siteName;
 
             InternetSiteIPs = GetIpList(ipList, '&');
-            DomainName = domainName;
+            InternetSiteDomain = internetDomain;
             InternetSiteAliases = aliasesList.Split('&').ToList();
         }
 

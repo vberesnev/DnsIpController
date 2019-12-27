@@ -60,6 +60,7 @@ namespace DnsIpController
             info_label.Text = "Загрузка данных из Internet . . .";
             await InternetLoadAsync(sid);
             info_label.Text = controller.Message;
+            SetDataSource();
         }
 
         private Task InternetLoadAsync(SetInfoDelegate sid)

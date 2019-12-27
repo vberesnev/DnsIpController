@@ -75,7 +75,7 @@ namespace DnsIpController.Model
                 for (int i = 0; i < Count; i++)
                 {
                     Items[i].LoadFromInternet();
-                    sid($"Обработано {i++} заданий");
+                    sid($"Обработано {i+1} заданий");
                 }
                 InfoMessage = $"Обработка заданий закончена. Обработано {Count} заданий";
                 SaveTasksToFile(path, ";");
@@ -115,7 +115,7 @@ namespace DnsIpController.Model
             }
             catch(Exception ex)
             {
-                InfoMessage = ex.Message;
+                InfoMessage =  $"Ошибка сохранения в файл: {ex.Message}";
             }
         }
     }

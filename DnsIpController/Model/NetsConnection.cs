@@ -21,7 +21,7 @@ namespace DnsIpController.Model
         public static bool CheckInternetConnection()
         {
             byte[] buffer = Encoding.ASCII.GetBytes(data);
-            return SendPing(yandex, buffer);
+            return SendPing(google, buffer);
         }
 
         public static bool CheckOmegaConnection()
@@ -40,7 +40,7 @@ namespace DnsIpController.Model
         {
             Ping pingSender = new Ping();
             PingOptions options = new PingOptions(3, true);
-            PingReply reply = pingSender.Send(address, timeOut, buffer, options);
+            PingReply reply = pingSender.Send(address, timeOut);
             return reply.Status == IPStatus.Success;
         }
     }

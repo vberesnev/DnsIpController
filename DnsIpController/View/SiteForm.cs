@@ -90,12 +90,25 @@ namespace DnsIpController.View
 
         private async void saveOmega_button_Click(object sender, EventArgs e)
         {
+            string domainTemp = controller.CurrentSite.DomainName;
+            string siteTemp = controller.CurrentSite.SiteName;
+
             controller.CurrentSite.DomainName = omegaDomain_textBox.Text;
             controller.CurrentSite.SiteName = statisticsDomen_textBox.Text;
             ShowMessageDeleg = ShowMessage;
             bool result = await SaveSiteInfoToOmegaAsync(ShowMessageDeleg);
             if (result)
-                this.Close();
+            {
+                result = await SaveSiteInfoToFileAsync(ShowMessageDeleg);
+                if (result)
+                    this.Close();
+            }
+            else
+            {
+                controller.CurrentSite.DomainName = domainTemp;
+                controller.CurrentSite.SiteName = siteTemp;
+            }
+
         }
 
         private Task<bool> SaveSiteInfoToOmegaAsync(ShowMessageDelegate showMessageDeleg)
@@ -120,7 +133,7 @@ namespace DnsIpController.View
 
         private Task<bool> SaveSiteInfoToFileAsync(ShowMessageDelegate showMessageDeleg)
         {
-            return Task.Run(() => controller.SaveSiteInfoToOmega(showMessageDeleg));
+            return Task.Run(() => controller.SaveSiteInfoToFile(showMessageDeleg));
         }
     }
 }
