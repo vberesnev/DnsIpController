@@ -28,11 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.omega_button = new System.Windows.Forms.Button();
             this.info_label = new System.Windows.Forms.Label();
             this.file_button = new System.Windows.Forms.Button();
             this.internet_button = new System.Windows.Forms.Button();
             this.sitesList_dataGridView = new System.Windows.Forms.DataGridView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.sitesList_dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -86,15 +89,29 @@
             this.sitesList_dataGridView.ReadOnly = true;
             this.sitesList_dataGridView.RowHeadersVisible = false;
             this.sitesList_dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.sitesList_dataGridView.Size = new System.Drawing.Size(1051, 543);
+            this.sitesList_dataGridView.Size = new System.Drawing.Size(1260, 559);
             this.sitesList_dataGridView.TabIndex = 4;
+            this.sitesList_dataGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.sitesList_dataGridView_CellMouseClick);
             this.sitesList_dataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.sitesList_dataGridView_CellMouseDoubleClick);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(500, 36);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 6;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1075, 646);
+            this.ClientSize = new System.Drawing.Size(1284, 662);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.sitesList_dataGridView);
             this.Controls.Add(this.internet_button);
             this.Controls.Add(this.file_button);
@@ -116,6 +133,8 @@
         private System.Windows.Forms.Button file_button;
         private System.Windows.Forms.Button internet_button;
         private System.Windows.Forms.DataGridView sitesList_dataGridView;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

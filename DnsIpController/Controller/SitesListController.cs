@@ -81,9 +81,16 @@ namespace DnsIpController.Controller
             {
                 showMessageDeleg("Нет подключения к сети Омега");
                 return false;
-            }
-                
+            } 
         }
+
+        public void SyncParametrs(int ruleId, int objId, string name)
+        {
+            CurrentSite = List.FirstOrDefault(x => x.RuleID == ruleId && x.ObjectID == objId && x.OmegaTaskName == name);
+            if (CurrentSite != null)
+                List.Find(x => x.RuleID == CurrentSite.RuleID && x.ObjectID == CurrentSite.ObjectID).DomainName = CurrentSite.InternetSiteDomain;
+        }
+
 
         public bool SaveSiteInfoToFile(ShowMessageDelegate showMessageDeleg)
         {
@@ -99,6 +106,12 @@ namespace DnsIpController.Controller
                 showMessageDeleg(ex.Message);
                 return false;
             }
+        }
+
+        public void SaveAllToFile()
+        {
+            SitesList.SaveTasksToFile(file.FullName, ";");
+            Message = SitesList.InfoMessage;
         }
     }
 }
